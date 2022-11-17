@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+    xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
+    
+ <!--To display username of a logged-in user, use the following code:-->
+<span sec:authentication="name">Username</span>
+
+<!--To show all the roles (authorities/permissions/rights) of the current user, use the following code:-->
+<span sec:authentication="principal.authorities">Roles</span>
+
+<!--To show a section that is for only authenticated users, use the following code-->
+<div sec:authorize="isAuthenticated()">
+    Welcome <b><span sec:authentication="name">Username</span></b>
+    &nbsp;
+    <i><span sec:authentication="principal.authorities">Roles</span></i>
+</div>
+
+<!--To display the Logout button:-->
+<form th:action="@{/logout}" method="post">
+    <input type="submit" value="Logout" />
+</form>
+
+<!--Because only the users have role USER or ADMIN can Upload New Image,:-->
+<div sec:authorize="hasAnyAuthority'USER', 'ADMIN')">
+    <a href="/new">Upload New Image</a>
+</div>
+
+<!--The users with role ADMIN can see the links to edit/update products, thus the following code-->
+<div sec:authorize="hasAnyAuthority('ADMIN')">
+    <a th:href="/@{'/edit/' + ${product.id}}">Edit</a>
+</div>
+
+<!--And only ADMIN users can see the link to delete Image-->
+<div sec:authorize="hasAnyAuthority('ADMIN')">
+    <a th:href="/@{'/delete/' + ${product.id}}">Delete</a>
+</div>

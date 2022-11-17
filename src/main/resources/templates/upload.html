@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en" 
+		xmlns:th="http://www.thymeleaf.org"
+		xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
+<head>
+  <title>Upload page</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+  <link rel="stylesheet" href="/css/style.css">
+  <link rel="stylesheet" href="https://cdn.datatables.net/1.10.21/css/dataTables.bootstrap.min.css">
+</head>
+<body>
+	<!-- create navigation bar ( header) -->
+	<nav class="navbar navbar-inverse navbar-fixed-top">
+		<div class="container">
+			<div class="navbar-header">
+				<button type="button" class="navbar-toggle collapsed"
+					data-toggle="collapse" data-target="#navbar" aria-expanded="false"
+					aria-controls="navbar">
+					<span class="sr-only">Toggle navigation</span> <span
+						class="icon-bar"></span> <span class="icon-bar"></span> <span
+						class="icon-bar"></span>
+				</button>
+				<a sec:authorize="hasAnyAuthority('ADMIN','USER')"class="navbar-brand" th:href="@{/home}">Home</a>
+				<a sec:authorize="hasAnyAuthority('ADMIN')" class="navbar-brand" th:href="@{/admin}">Admin Panel </a>				
+			</div>
+			<div id="navbar" class="collapse navbar-collapse">
+				<ul class="nav navbar-nav">
+					<li>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</li>			
+					<li sec:authorize="isAuthenticated()"><a th:href="@{/logout}"class="btn btn-danger" style="color:White;">Logout</a></li>	
+				</ul>
+			</div>
+		</div>
+	</nav>
+
+<br>
+<br>
+<br>
+<br>
+
+<!-- Create HTML registration form -->
+	<div class="container">
+		<div class="row">
+			<div class="col-md-6 col-md-offset-3">
+
+				<!-- success message -->
+				<div th:if="${param.success}">
+					<div class="alert alert-info">You've successfully upload new image, waiting for admin approval!</div>
+				</div>
+				
+				<!-- Admin success message -->
+				<div th:if="${param.adminsuccess}">
+					<div class="alert alert-info">You've successfully upload new image!</div>
+				</div>
+				
+				
+				<!-- invalid path message -->				
+				<div th:if="${param.invalid}">
+					<div class="alert alert-danger">invalid path! Please Try with right file path! </div>
+				</div>
+				
+				<!-- Bad Credentials message -->
+				<div th:if="${param.bad}">
+					<div class="alert alert-danger">something went wrong! Please Try again! </div>
+				</div>
+				
+				<!-- Filsize limit message -->
+				<div th:if="${param.limit}">
+					<div class="alert alert-danger">Maximum size is 2MB! </div>
+				</div>
+
+
+				<h1>Upload New Image</h1>
+
+				<form th:action="@{/image/saveImageDetails}" method="post" enctype="multipart/form-data" th:object="${imageGallery}">
+				
+					<div class="form-group">
+						<label class="control-label" for="image_category"> Image Category </label>
+						<select class="form-control" id="dropDownList" th:field="*{image_category}" autofocus="autofocus">
+						    <!-- <option value="0">select Category</option> -->
+						    <option value="living thing" >living thing</option>
+						    <option value="machine" >machine</option>
+						    <option value="nature" >nature</option>
+						    <option th:each="option : ${options}" th:value="${option}" th:text="${option}" ></option>
+						</select>
+						
+						<!-- <input class="form-control" type="text" id="image_category" name="image_name" placeholder="Image Name" th:field="*{image_name}"  required="required" autofocus="autofocus" /> -->
+						<p id="error_name"></p>
+					</div>
+					
+					<div class="form-group">
+						<label class="control-label" for="image_description"> Image Description </label>
+						<textarea class="form-control" id="image_description" name="image_description" placeholder="Image Description" th:field="*{image_description}" rows="3" cols="45" required="required" autofocus="autofocus" /></textarea>
+						<p id="error_description"></p>
+					</div>
+					
+					<div class="form-group">
+						<label class="control-label" for="image"> Image jpg, png, gif only </label>
+						<input class="form-control" type="file" accept="image/jpeg,image/png, image/jpg, image/gif" id="image" name="image" th:field="*{image}" placeholder="Select an image" required="required" autofocus="autofocus" />
+						<p id="error_file"></p>
+					</div>
+
+					<div class="form-group">
+						<button type="submit" class="btn btn-success">Upload</button>
+						<span> <a href="/" th:href="@{/image/show}">Go Home</a><br></span>
+					</div>
+				</form>
+			</div>
+		</div>
+	</div>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script src="https://cdn.datatables.net/1.10.21/js/jquery.dataTables.min.js"></script>
+<script src="https://cdn.datatables.net/1.10.21/js/dataTables.bootstrap.min.js"></script>
+</body>
+</html>

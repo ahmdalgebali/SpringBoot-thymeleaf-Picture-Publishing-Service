@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en" 
+		xmlns:th="http://www.thymeleaf.org"
+		xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
+<head>
+  <title>Welcome to Picture-Publishing-Service</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+  <link rel="stylesheet" href="/css/style.css">
+  <link rel="stylesheet" href="https://cdn.datatables.net/1.10.21/css/dataTables.bootstrap.min.css">
+</head>
+<body>
+	<!-- create navigation bar ( header) -->
+	<nav class="navbar navbar-inverse navbar-fixed-top">
+		<div class="container">
+			<div class="navbar-header">
+				<button type="button" class="navbar-toggle collapsed"
+					data-toggle="collapse" data-target="#navbar" aria-expanded="false"
+					aria-controls="navbar">
+					<span class="sr-only">Toggle navigation</span> <span
+						class="icon-bar"></span> <span class="icon-bar"></span> <span
+						class="icon-bar"></span>
+				</button>	
+				<a class="navbar-brand"  th:href="@{/home}">Home </a>
+				<a sec:authorize="hasAnyAuthority('USER','ADMIN')" class="navbar-brand"  th:href="@{/upload}">Upload Image </a> 
+				<a sec:authorize="hasAnyAuthority('ADMIN')" class="navbar-brand" th:href="@{/admin}">Admin Panel </a>			
+				
+			</div>
+			
+			<div id="navbar" class="collapse navbar-collapse">
+				<ul class="nav navbar-nav">
+					<li sec:authorize="!isAuthenticated()"><a href="/login" class="btn btn-success" style="color:White;">Login to upload images</a></li>
+					<li>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</li>			
+					<li sec:authorize="isAuthenticated()"><a th:href="@{/logout}"class="btn btn-danger" style="color:White;">Logout</a></li>	
+					<li>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</li>			
+				<!--<li<form sec:authorize="isAuthenticated()" th:action="@{/logout}" method="post"><input type="submit" value="Logout"  class="btn btn-danger"></form></li>-->	
+				</ul>
+			</div>
+		</div>
+	</nav>
+
+	<br>
+	<br>
+	<h3 sec:authorize="isAuthenticated()" class="navbar-brand">Welcome to PPS</h3>
+	<h3 sec:authorize="isAuthenticated()" sec:authentication="principal.username" class="navbar-brand">User</h3>
+	<!-- <h1 sec:authorize="isAuthenticated()" sec:authentication="principal.authorities" class="navbar-brand" >Roles </h1>  -->
+	<br>
+	<br>
+	<br>
+	<br>
+
+<table id="example" class="table table-striped table-bordered text-center ">
+        <thead>
+            <tr>
+                <th>Category</th>
+                <th>Image</th>
+                <th>Description</th>
+                <th>Created date</th>
+       			<th sec:authorize="hasAnyAuthority('ADMIN')">User</th> 
+				<th sec:authorize="hasAnyAuthority('ADMIN')">Action</th>
+				
+            </tr>
+        </thead>
+        
+        <tbody th:with="count=0">
+        <tr th:each = "imageGallery, hh : ${images}">           
+                <td th:text="${imageGallery.image_category}"></td> 
+                <td><img th:src="@{${'/image/display/'+ imageGallery.image_id}}" class="card img-fluid" style="width:60px" alt=""/>   <a th:href="@{/image/imageDetails(id=${imageGallery.image_id})}"  >View Details</a></td>        
+                <td th:text="${imageGallery.image_description}"></td>
+                <td th:text="${#dates.format({imageGallery.createDate}, 'dd-MM-yyyy')}"/></td>
+                <td sec:authorize="hasAnyAuthority('ADMIN')" th:text="${imageGallery.image_user}"></td>
+	            <td sec:authorize="hasAnyAuthority('ADMIN')">        
+					<a th:href="@{/image/imageDelete(id=${imageGallery.image_id})}" class="btn btn-danger btn-sm"
+						onclick="if (!(confirm('Are you sure you want to delete this image?'))) return false">Delete</a>
+				</td>	
+
+				
+				
+				
+				
+            </tr>
+        </tbody>
+    </table>
+
+
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+	<script src="https://cdn.datatables.net/1.10.21/js/jquery.dataTables.min.js"></script>
+	<script src="https://cdn.datatables.net/1.10.21/js/dataTables.bootstrap.min.js"></script>
+	<script type="text/javascript">
+	$(document).ready(function() {$('#example').DataTable();} );</script>
+</body>
+</html>

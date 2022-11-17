@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en" 
+		xmlns:th="http://www.thymeleaf.org"
+		xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
+<head>
+<meta charset="ISO-8859-1">
+<title>PixelTrice</title>
+<meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+
+	<!-- create navigation bar ( header) -->
+	<nav class="navbar navbar-inverse navbar-fixed-top">
+		<div class="container">
+			<div class="navbar-header">
+				<button type="button" class="navbar-toggle collapsed"
+					data-toggle="collapse" data-target="#navbar" aria-expanded="false"
+					aria-controls="navbar">
+					<span class="sr-only">Toggle navigation</span> <span
+						class="icon-bar"></span> <span class="icon-bar"></span> <span
+						class="icon-bar"></span>
+				</button>	
+				<a class="navbar-brand"  th:href="@{/home}">Home </a>
+				<a sec:authorize="hasAnyAuthority('USER','ADMIN')" class="navbar-brand"  th:href="@{/upload}">Upload Image </a> 
+				<a sec:authorize="hasAnyAuthority('ADMIN')" class="navbar-brand" th:href="@{/admin}">Admin Panel </a>			
+				
+			</div>
+			
+			<div id="navbar" class="collapse navbar-collapse">
+				<ul class="nav navbar-nav">
+					<li sec:authorize="!isAuthenticated()"><a href="/login" class="btn btn-success" style="color:White;">Login to upload images</a></li>
+					<li>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</li>			
+					<li sec:authorize="isAuthenticated()"><a th:href="@{/logout}"class="btn btn-danger" style="color:White;">Logout</a></li>	
+					<li>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</li>			
+				<!--<li<form sec:authorize="isAuthenticated()" th:action="@{/logout}" method="post"><input type="submit" value="Logout"  class="btn btn-danger"></form></li>-->	
+				</ul>
+			</div>
+		</div>
+	</nav>
+
+	<br>
+	<br>
+	<h3 sec:authorize="isAuthenticated()" class="navbar-brand">Welcome</h3>
+	<h3 sec:authorize="isAuthenticated()" sec:authentication="principal.username" class="navbar-brand">User</h3>
+	<!-- <h1 sec:authorize="isAuthenticated()" sec:authentication="principal.authorities" class="navbar-brand" >Roles </h1>  -->
+	<br>
+	<br>
+	<br>
+	<br>
+	
+	<div class="banner-bootom-w3-agileits py-5">
+		<div class="container py-xl-4 py-lg-2">
+			<!-- tittle heading -->
+			<h3 class="tittle-w3l text-center mb-lg-5 mb-sm-4 mb-3">
+				<span>I</span>mage
+				<span>D</span>etails</h3><br>
+			<!-- //tittle heading -->
+			<div class="row">
+				<div class="col-lg-5 col-md-8 single-right-left ">
+					<div class="grid images_3_of_2">
+						<div class="flexslider">
+						<div class="thumb-image">
+							<img th:src="@{${'/image/display/'+id}}" 
+							 class="img img-responsive img-fluid" alt=""> 
+						</div>
+							<div class="clearfix"></div>
+						</div>
+					</div>
+				</div>
+
+				<div class="col-lg-7 single-right-left simpleCart_shelfItem">
+				
+									
+				<p sec:authorize="hasAnyAuthority('ADMIN')" class="mb-3">
+					<mark>User: <span th:text="${user}" class="my-sm-4 my-3"> </span></mark><br>
+				</p>
+					
+				<p class="mb-3">
+					Category: <span th:text="${category}" class="mb-3"></span>
+					</p>
+					
+					<p class="mb-3">
+						Created date : <span class="item_price" th:text="${createDate}"></span>
+					</p>
+					
+					<p class="mb-3">
+						Description: <span th:text="${description}" class="my-sm-4 my-3"> </span><br>
+					</p>
+
+					
+					<div sec:authorize="hasAnyAuthority('ADMIN')">       
+	               	<a 	th:href="@{/image/imageAccept(id=${id})}" th:if="${!isEnabled}" class="btn btn-info btn-sm"
+	               		onclick="if (!(confirm('Are you sure you want to Accept this image?'))) return false">Accept</a>
+					<a 	th:href="@{/image/imageReject(id=${id})}" th:if="${!isEnabled}" class="btn btn-danger btn-sm"
+						onclick="if (!(confirm('Are you sure you want to reject this image?'))) return false">Reject</a>
+						<a 	th:href="@{/image/imageDelete(id=${id})}" th:if="${isEnabled}" class="btn btn-danger btn-sm"
+						onclick="if (!(confirm('Are you sure you want to Delete this image?'))) return false">Delete</a>
+					</div>
+					
+					<div th:switch="${isEnabled}">
+					    <span th:case="${false}"><a href="/admin">Go Back</a></span>
+					    <span th:case="${true}"><a href="/image/show">Go Back</a></span>
+					    <span th:case="*">Should never happen, but who knows...</span>
+					    					&emsp;<a href="/">Go Home</a>
+					    
+					</div>
+
+				</div>
+			</div>
+		</div>
+	</div>
+</body>
+</html>
